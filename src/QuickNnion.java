@@ -1,15 +1,13 @@
 /**
- * Created by Zcl on 2016/10/26.
- *
- * 算法1.5  p145
- * quickfind -> quickunion -> 加权quickunion -> 路径压缩的加权quickunion算法
+ * Created by Zcl on 2016/10/27.
  */
-public class UnionFind {
+public class QuickNnion {
+
     private int[] id;   //每个节点指向的父节点
     private int[] sz;   //根节点所在集合大小
     private int count;  //连通分量数（集合数）
 
-    public UnionFind(int n){
+    public QuickNnion(int n){
         count = n;
         id = new int[n];
         sz = new int[n];
@@ -43,6 +41,5 @@ public class UnionFind {
         }
         count --;
     }
-
 
 }
