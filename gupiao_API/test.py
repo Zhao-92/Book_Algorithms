@@ -1,28 +1,16 @@
 # -*- coding:utf-8 -*-
-
-import urllib 
-import urllib2 
 import requests   
 import tushare as ts
 import pandas as pd
 import csv
+import time
+ 
 
 # 下载所有股票的基本信息
 def downAllStock(path):
-	print 'begin download all stocks...'
+	print 'Begin download all stocks ...'
 	basicData = ts.get_stock_basics()
 	basicData.to_csv(path,columns=['name','industry','area','pe','outstanding','totals','timeToMarket'])
-	print 'finish download'
-
-
-# 获取csv文件行数
-def getlines(file):
-	num = 0
-	for row in csv.reader(file):
-		num = num + 1
-	print 'lines :'
-	print num
-	return num;
 
 
 # 将股票代码改为6位
@@ -38,8 +26,8 @@ def getCode(str):
 
 # 传入股票代码,计算第1天，第15天，第30天股价
 def getSingleStock(stockNo,pathSingle):
-	print 'begin get single stock ' + stockNo + '...'
-	stockSingle = ts.get_hist_data(stockNo).head(30)    # 获取30天的股票信息
+	print 'Begin get single stock : 【' + stockNo + '】 ...'
+	stockSingle = ts.get_hist_data(stockNo).head(40)    # 获取40天的股票信息
 	singleTemp = pathSingle + stockNo + '.csv'    # 储存该股票历史数据
 	stockSingle.to_csv(singleTemp)
 	fileTemp = open(singleTemp,'rb')
@@ -50,89 +38,86 @@ def getSingleStock(stockNo,pathSingle):
 	for row in reader:
 		if day == 1:
 			value_1 = row[3]    # 取当天收盘价作为当天价格
-			print "value_1: " + value_1 
+			print 'day:' + str(day) +'  '+'value_1:' + value_1 
 		if day == 15:
 			value_15 = row[3]
-			print "value_15: " + value_15
+			print 'day:' + str(day) +'  '+'value_15:' + value_15
 		if day == 30:
 			value_30 = row[3]
-			print "value_30: " + value_30 
+			print 'day:' + str(day) +'  '+'value_30:' + value_30 
+			return [value_1,value_15,value_30]
 		day += 1;
+	if day < 30:
+		print 'Unenough to 30 days'
+		return False
 
-	return [value_1,value_15,value_30]
 
 
 # 根据三次股票价格，挑选总市值小于50亿的股票，并写入pathRt
 # value 为getSingleStock()返回的参数值，row为读取pathSc的一行数据
 def chooseStock(value,row,writer):
-	valueTotal_1 = float(value[1]) * float(row[6]);
+	valueTotal_1  = float(value[1]) * float(row[6]);
 	valueTotal_15 = float(value[2]) * float(row[6]);
 	valueTotal_30 = float(value[3]) * float(row[6]);
 	if valueTotal_1 < 500000 and valueTotal_1< 0.9*valueTotal_15 and valueTotal_1< 0.8*valueTotal_30:
 		print 'find the stock !!!!'
 		print row[1]
+		print ' '
+		row.append(value[0])
+		row.append(value[1])
+		row.append(value[2])
+		writer.writerow(row)
+		golds.append(row)
+		return True
+	return False
 
 
 
 # --------------------- 主函数 ------------------------ #
 
-pathSc = 'E:\\Python\\gupiao_API\\down\\all.csv'    # 存储所有股票相关信息
-pathRt = 'E:\\Python\\gupiao_API\\down\\result.csv'   # 存储筛选后的相关股票
-pathSingle = 'E:\\Python\\gupiao_API\\down\\single\\'  # 存储每只股票相关信息
+# pathSc = 'E:\\Python\\gupiao_API\\down\\all.csv'    # 存储所有股票相关信息
+# pathRt = 'E:\\Python\\gupiao_API\\down\\result.csv'   # 存储筛选后的相关股票
+# pathSingle = 'E:\\Python\\gupiao_API\\down\\single\\'  # 存储每只股票相关信息
+pathSc = '/Users/ponycc/Study/test/gupiao_API/down/all.csv'    # 存储所有股票相关信息
+pathRt = '/Users/ponycc/Study/test/gupiao_API/down/result.csv'   # 存储筛选后的相关股票
+pathSingle = '/Users/ponycc/Study/test/gupiao_API/down/single/'  # 存储每只股票相关信息
 
+column = ['name','industry','area','pe','outstanding',
+	'totals','timeToMarket','value-1','value-15','value-30']
 # 下载所有股票数据存入pathSc
 downAllStock(pathSc)
 
 # 读取fileSc文件数据
-csvfileSc = open(pathSc,'rb')
+fileSc = open(pathSc,'rb')
+fileRt = open(pathRt)
+reader = csv.reader(fileSc)
+writer = csv.writer(fileRt)
+writer.writerow(column)
 
-# 把总市值满足条件的股票写入该文件内
-# fileRt = file(pathRt,'wb')
-# writer = csv.writer(fileRt)
+lines = 0   #当前读取的行数
+gold = 0   #符合条件的股票数
+golds = [columu]  #符合条件的股票
 
-
-print 'begin read...'
-reader = csv.reader(csvfileSc)
-lines = getlines(csvfileSc)
-line = 0   # 记录当前读取行数
-for rows in reader:
-	print 'line = '+line
-	if line > 0:
-		stockNo = getCode(rows[0])
-		print '开始计算股票：'+ stockNo
+print 'Begin find Gold ...'
+for row in reader:
+	lines += 1
+	if lines > 0:
+		stockNo = getCode(str)
 		value = getSingleStock(stockNo,pathSingle)
-		print '得到股票价格：'+ value
-		# chooseStock(value,row,writer)
-		line += 1
+		sleep(2)
+		if !value:
+			continue
+		if chooseStock(value,row,writer):
+			gold += 1
+			sleep(5)
 
 
+fileRt.close()
 
-# fileRt.close()
-
-
-
-
-
+print 'Find '+gold+' stocks from '+lines-1+' stocks as follow:'
+for x in golds:
+	print x
 
 
-
-
-# 读取数据存入二维数组
-# def readStock(file):
-# 	print 'begin read...'
-# 	lines = getlines(file)
-# 	print lines
-# 	reader = csv.reader(file)
-# 	i = 0
-# 	j = 0
-# 	for row in reader:
-# 		for word in row:
-# 			# stocks[i][j] = word
-# 			test = word
-# 			j+=1
-# 		i+=1
-
-# 	print 'finish read'
-# 	return test
 
 
