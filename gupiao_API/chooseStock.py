@@ -27,7 +27,11 @@ def getCode(str):
 # 传入股票代码,计算第1天，第15天，第30天股价
 def getSingleStock(stockNo,pathSingle):
 	print 'Begin get single stock : 【' + stockNo + '】 ...'
-	stockSingle = ts.get_hist_data(stockNo).head(40)    # 获取40天的股票信息
+	stockSingle = ts.get_hist_data(stockNo)
+	print stockSingle
+	if stockSingle == None:
+		return 0
+	stockSingle = stockSingle.head(40)    # 获取40天的股票信息
 	singleTemp = pathSingle + stockNo + '.csv'    # 储存该股票历史数据
 	stockSingle.to_csv(singleTemp)
 	fileTemp = open(singleTemp,'rb')
