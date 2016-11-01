@@ -11,6 +11,7 @@ import types
 def downAllStock(path):
 	print 'Begin download all stocks ...'
 	basicData = ts.get_stock_basics()
+	print 'get basicDate'
 	basicData.to_csv(path,columns=['name','industry','area','pe','outstanding','totals','timeToMarket'])
 
 
@@ -75,7 +76,7 @@ def chooseStock(value,row,writer):
 	valueTotal_2 = float(value[1]) * float(row[6]);
 	valueTotal_3 = float(value[2]) * float(row[6]);
 	# if valueTotal_1 < 500000 and valueTotal_1< 0.95*valueTotal_2 and valueTotal_2< 0.95*valueTotal_3:
-	if valueTotal_1 < 500000 and valueTotal_1< 0.88*valueTotal_3:
+	if valueTotal_1 < 500000 and valueTotal_1< 0.88*valueTotal_3 and valueTotal_1< valueTotal_2:
 		print 'find the stock !!!!'
 		row.append(value[0])
 		row.append(value[1])
@@ -117,6 +118,8 @@ golds = [column]  #符合条件的股票
 days = [1,12,25]  #挑选股价的三个时间
 start = time.clock()
 
+print start
+
 print 'Begin find Gold ...'
 for row in reader:
 	
@@ -138,11 +141,13 @@ for row in reader:
 fileSc.close()
 fileRt.close()
 end = time.clock()
+print end
 
 print "Used time: %f s" % (end - start)
 print 'Find '+str(gold)+' stocks from '+str(lines-1)+' stocks as follow:'
 for x in golds:
-	print x
+	for word in x:
+		print word
 
 
 
