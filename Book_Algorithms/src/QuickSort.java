@@ -53,7 +53,7 @@ public class QuickSort {
     }
 
     public static void main(String[] args){
-        int[] a = {6,1,2,15,24,16,498,64,54,48,465,32,136,546,86,468,5,3,4};
+        int[] a = {6,1,2,15,24,16,498,64,54,32,6,7,6,48,465,32,136,1,546,86,468,5,3,4};
         sort(a,0,a.length-1);
         show(a);
         isSorted(a);
