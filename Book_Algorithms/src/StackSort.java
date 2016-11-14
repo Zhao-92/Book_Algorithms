@@ -1,14 +1,14 @@
 /**
- * Created by Zcl on 2016/11/8.
+ * Created by Zcl on 2016/11/9.
  *
- * 基于堆的优先队列
+ * 基于堆优先队列的排序
  */
-public class MaxPQ {
+public class StackSort {
     int num;
     int[] value;       //索引0不使用，从1开始
 
-    public MaxPQ(int n){
-        value = new int[n];
+    public StackSort(int[] n){
+        value = n;
     }
 
     public int size() {
