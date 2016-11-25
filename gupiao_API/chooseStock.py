@@ -76,7 +76,7 @@ def chooseStock(value,row,writer):
 	valueTotal_2 = float(value[1]) * float(row[6]);
 	valueTotal_3 = float(value[2]) * float(row[6]);
 	# if valueTotal_1 < 500000 and valueTotal_1< 0.95*valueTotal_2 and valueTotal_2< 0.95*valueTotal_3:
-	if valueTotal_1 < 550000 and valueTotal_1<valueTotal_3 and valueTotal_1< valueTotal_2:
+	if valueTotal_1 < 550000 and valueTotal_1< 0.90*valueTotal_3 and valueTotal_1< valueTotal_2:
 		print 'find the stock !!!!'
 		row.append(value[0])
 		row.append(value[1])
@@ -93,15 +93,16 @@ def chooseStock(value,row,writer):
 # --------------------- 主函数 ------------------------ #
 
 pathSc = 'E:\\Python\\gupiao_API\\down\\all.csv'    # 存储所有股票相关信息
-pathRt = 'E:\\Python\\gupiao_API\\down\\result1115.csv'   # 存储筛选后的相关股票
+pathRt = 'E:\\Python\\gupiao_API\\down\\result.csv'   # 存储筛选后的相关股票
 pathSingle = 'E:\\Python\\gupiao_API\\down\\single\\'  # 存储每只股票相关信息
 # pathSc = '/Users/ponycc/Study/test/gupiao_API/down/all.csv'    # 存储所有股票相关信息
 # pathRt = '/Users/ponycc/Study/test/gupiao_API/down/result.csv'   # 存储筛选后的相关股票
 # pathSingle = '/Users/ponycc/Study/test/gupiao_API/down/single/'  # 存储每只股票相关信息
 
-column = ['id','name','industry','area','pe','outstanding','totals','timeToMarket','value-1','value-2','value-3']
+column = ['id','name','industry','area','pe','outstanding','totals',
+	'timeToMarket','value-1','value-2','value-3']
 
-# 下载所有股票数据存入pathSc
+#下载所有股票数据存入pathSc
 downAllStock(pathSc)
 
 # 读取fileSc文件数据
@@ -114,7 +115,7 @@ writer.writerow(column)
 lines = 0   #当前读取的行数
 gold = 0   #符合条件的股票数
 golds = [column]  #符合条件的股票
-days = [1,15,25]  #挑选股价的三个时间
+days = [1,12,25]  #挑选股价的三个时间
 start = time.clock()
 
 print start
@@ -147,7 +148,3 @@ print 'Find '+str(gold)+' stocks from '+str(lines-1)+' stocks as follow:'
 for x in golds:
 	for word in x:
 		print word
-
-
-
-
