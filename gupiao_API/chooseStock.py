@@ -148,7 +148,3 @@ print 'Find '+str(gold)+' stocks from '+str(lines-1)+' stocks as follow:'
 for x in golds:
 	for word in x:
 		print word
-
-
-
-
